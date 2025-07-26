@@ -31,8 +31,8 @@ export interface Seo {
 }
 
 export interface CtaText {
-    text: string;
-    link: string;
+    name: string;
+    value: string;
 }
 
 export interface ProductData {
