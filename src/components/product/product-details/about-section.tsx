@@ -4,13 +4,8 @@ import {useState} from "react";
 import {Section} from "@/src/types/product";
 import ProductSectionWrapper from "@/src/components/common/wrapper/product-section-wrapper";
 import {IoChevronDown, IoChevronUp} from "react-icons/io5";
+import {AboutItem} from "@/src/types/product-details";
 
-interface AboutItem {
-    description: string;
-    icon: string;
-    id: string;
-    title: string;
-}
 
 export default function AboutSection({section}: { section: Section }) {
     const [openIndex, setOpenIndex] = useState<number>(0); // First one open

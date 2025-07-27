@@ -13,7 +13,7 @@ interface ChecklistItem {
 interface PricingSectionProps {
     currentPrice: number;
     cta: CtaText;
-    checklist: ChecklistItem[];
+    checklist: any;
 }
 
 export default function PricingSection({ currentPrice, cta, checklist }: PricingSectionProps) {
@@ -50,7 +50,7 @@ export default function PricingSection({ currentPrice, cta, checklist }: Pricing
                 </h3>
 
                 <div className="space-y-3">
-                    {checklist?.map((item, index) => (
+                    {checklist?.map((item:any, index:number) => (
                         <div key={index} className="flex items-center space-x-3">
                             <img
                                 src={item.icon}

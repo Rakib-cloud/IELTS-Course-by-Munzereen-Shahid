@@ -1,4 +1,4 @@
-import {CtaText, ProductData} from "@/src/types/product";
+import { ProductData} from "@/src/types/product";
 import {fetchProductData} from "@/src/lib/api";
 import ProductDetails from "@/src/components/product/product-details";
 

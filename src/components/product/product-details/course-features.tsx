@@ -1,18 +1,13 @@
-import { Section } from "@/src/types/product";
+import {Section} from "@/src/types/product";
 import ProductSectionWrapper from "@/src/components/common/wrapper/product-section-wrapper";
+import {FeatureItem} from "@/src/types/product-details";
 
-interface FeatureItem {
-    icon: string;
-    id: string;
-    subtitle: string;
-    title: string;
-}
 
-export default function CourseFeaturesSection({ section }: { section: Section }) {
+export default function CourseFeaturesSection({section}: { section: Section }) {
     return (
         <ProductSectionWrapper title={section.name}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-800 rounded-lg">
-                {section.values.map((feature: FeatureItem, i) => (
+                {section.values.map((feature: FeatureItem, i: number) => (
                     <div key={feature.id || i} className="text-white p-4">
                         <div className="flex items-start gap-4">
                             {/* Icon */}

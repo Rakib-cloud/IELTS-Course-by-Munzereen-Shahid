@@ -1,16 +1,10 @@
-
-import { Section } from "@/src/types/product";
+import {Section} from "@/src/types/product";
 import ProductSectionWrapper from "@/src/components/common/wrapper/product-section-wrapper";
-import { FiCheck } from "react-icons/fi";
+import {FiCheck} from "react-icons/fi";
+import {LearningPoint} from "@/src/types/product-details";
 
-interface LearningPoint {
-    color: string;
-    icon: string;
-    id: string;
-    text: string;
-}
 
-export default function LearningOutcomesSection({ section }: { section: Section }) {
+export default function LearningOutcomesSection({section}: { section: Section }) {
     return (
         <ProductSectionWrapper title={section.name}>
             <div className="rounded-lg md:border md:border-gray-200 md:bg-white">
@@ -22,7 +16,7 @@ export default function LearningOutcomesSection({ section }: { section: Section 
                                     className="mt-[2px] flex-shrink-0 text-blue-500"
                                     size={18}
                                 />
-                                <div className="flex-1" style={{ color: point.color || "black" }}>
+                                <div className="flex-1" style={{color: point.color || "black"}}>
                                     {point.text}
                                 </div>
                             </li>

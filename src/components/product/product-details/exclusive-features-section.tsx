@@ -1,22 +1,15 @@
 import {Section} from "@/src/types/product";
 import ProductSectionWrapper from "@/src/components/common/wrapper/product-section-wrapper";
 import {FiCheck} from "react-icons/fi";
+import {ExclusiveFeature} from "@/src/types/product-details";
 
-interface ExclusiveFeature {
-    checklist: string[];
-    file_type: string;
-    file_url: string;
-    id: string;
-    title: string;
-    video_thumbnail: string;
-}
 
 export default function ExclusiveFeaturesSection({section}: { section: Section }) {
     return (
         <ProductSectionWrapper title={section.name}>
             <div
                 className="grid grid-cols-1 px-5 border divide-y divide-gray-200 rounded-lg md:border md:border-gray-200 md:bg-white">
-                {section.values.map((feature: ExclusiveFeature, index) => (
+                {section.values.map((feature: ExclusiveFeature, index: number) => (
                     <div
                         key={feature.id || index}
                         className="flex flex-col items-start justify-between gap-3 py-2 md:flex-row"

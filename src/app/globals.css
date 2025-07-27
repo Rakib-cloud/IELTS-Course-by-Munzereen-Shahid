@@ -4,3 +4,21 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
 }
+
+/* gallery-custom.css */
+
+.image-gallery-icon {
+    height: 40px !important;
+    width: 40px !important;
+}
+
+.image-gallery-left-nav,
+.image-gallery-right-nav {
+    padding: 0 !important;
+}
+
+.image-gallery-svg {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: medium !important;
+}

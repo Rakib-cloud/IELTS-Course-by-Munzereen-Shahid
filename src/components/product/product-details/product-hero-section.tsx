@@ -29,7 +29,7 @@ export default function ProductHeroSection({
                 backgroundPosition: "center",
             }}
         >
-            <div className="container mx-auto px-4 lg:px-8 relative flex flex-col md:flex-row gap-4 md:gap-12 pb-6 md:py-10 min-h-[300px]">
+            <div className="container mx-auto px-4 lg:px-32 relative flex flex-col md:flex-row gap-4 md:gap-12 pb-6 md:py-10 min-h-[300px]">
                 {/* Left Content */}
                 <div className="flex-1 flex flex-col justify-center md:max-w-[calc(100%_-_400px)] pt-8 md:pt-0">
                     {/* Mobile Gallery */}
@@ -76,3 +76,7 @@ export default function ProductHeroSection({
         </div>
     );
 }
+
+
+
+

@@ -18,11 +18,6 @@ export interface Section {
 
 }
 
-export interface Instructor {
-    name: string;
-    bio: string;
-    image: string;
-}
 
 export interface Seo {
     title: string;
