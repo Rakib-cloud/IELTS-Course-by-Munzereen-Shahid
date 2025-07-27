@@ -29,10 +29,10 @@ export default function ProductHeroSection({
             
             if (rightSideElement) {
                 const rightSideRect = rightSideElement.getBoundingClientRect();
-                const rightSideBottom = rightSideRect.bottom + window.scrollY;
                 
-                // Make sticky only when we've scrolled past the end of right side content
-                const shouldBeSticky = window.scrollY > rightSideBottom - window.innerHeight;
+                // Make sticky only when the entire right sidebar has scrolled out of view
+                // (when the bottom of the right sidebar is above the top of the viewport)
+                const shouldBeSticky = rightSideRect.bottom < 0;
                 
                 setIsSticky(shouldBeSticky);
             }
@@ -105,7 +105,7 @@ export default function ProductHeroSection({
                 </div>
             </div>
 
-            {/* Sticky Pricing Section - Only shows after scrolling past right sidebar content */}
+            {/* Sticky Pricing Section - Only shows after right sidebar completely scrolls out of view */}
             {isSticky && (
                 <div className="fixed top-8 right-4 lg:right-8 w-full max-w-[400px] z-50 hidden md:block">
                     <div className="bg-white rounded shadow">
