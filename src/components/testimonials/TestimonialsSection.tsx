@@ -119,6 +119,20 @@ export default function TestimonialsSection({ section }: { section: Section }) {
     if (!section.values || section.values.length === 0) {
         return null;
     }
+    
+    console.log('📊 Section values:', section.values);
+    
+    // Debug thumbnail URLs specifically
+    section.values.forEach((testimonial: Testimonial, index: number) => {
+        if (testimonial.video_url && testimonial.thumb) {
+            console.log(`🎬 Video ${index + 1}:`, {
+                id: testimonial.id,
+                name: testimonial.name,
+                thumb: testimonial.thumb,
+                video_url: testimonial.video_url
+            });
+        }
+    });
 
     return (
         <ProductSectionWrapper title={section.name}>
@@ -159,7 +173,7 @@ export default function TestimonialsSection({ section }: { section: Section }) {
                                         <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
                                             <div className="relative h-40">
                                                 {playingVideos[testimonial.id] ? (
-                                                    // Show inline video iframe
+                                                    // Video playing state
                                                     <div className="relative w-full h-full">
                                                         <iframe
                                                             src={`https://www.youtube.com/embed/${extractYouTubeVideoId(testimonial.video_url)}?autoplay=1&rel=0&modestbranding=1&showinfo=0`}
@@ -178,31 +192,22 @@ export default function TestimonialsSection({ section }: { section: Section }) {
                                                         </button>
                                                     </div>
                                                 ) : (
-                                                    // Show thumbnail with play button
-                                                    <>
+                                                    // Thumbnail state
+                                                    <div className="relative w-full h-full">
                                                         <img
-                                                            src={testimonial.thumb || getYouTubeThumbnail(testimonial.video_url)}
-                                                            onError={(e) => {
-                                                                const target = e.currentTarget;
-                                                                const videoId = extractYouTubeVideoId(testimonial.video_url);
-                                                                
-                                                                if (videoId) {
-                                                                    if (target.src.includes('maxresdefault')) {
-                                                                        target.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-                                                                    } else if (target.src.includes('hqdefault')) {
-                                                                        target.src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
-                                                                    } else if (target.src.includes('mqdefault')) {
-                                                                        target.src = `https://img.youtube.com/vi/${videoId}/default.jpg`;
-                                                                    } else {
-                                                                        target.src = '/default-thumbnail.jpg';
-                                                                    }
-                                                                } else {
-                                                                    target.src = '/default-thumbnail.jpg';
-                                                                }
-                                                            }}
+                                                            src={testimonial.thumb}
                                                             alt={testimonial.name}
                                                             className="w-full h-full object-cover"
+                                                            onLoad={() => console.log('✅ Image loaded successfully:', testimonial.thumb)}
+                                                            onError={(e) => {
+                                                                console.log('❌ Image failed to load:', testimonial.thumb);
+                                                                console.log('Error event:', e);
+                                                                // Optionally set a fallback image
+                                                                // e.currentTarget.src = '/default-thumbnail.jpg';
+                                                            }}
                                                         />
+
+                                                        {/* Play button overlay */}
                                                         <button
                                                             onClick={() => handleVideoPlay(testimonial.id)}
                                                             className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 hover:bg-opacity-50 transition-all duration-200 group"
@@ -211,12 +216,14 @@ export default function TestimonialsSection({ section }: { section: Section }) {
                                                                 <FaPlay className="w-4 h-4 text-white ml-0.5" />
                                                             </div>
                                                         </button>
+
+                                                        {/* Score badge */}
                                                         {testimonial.description && (
                                                             <div className="absolute top-2 right-2 bg-yellow-400 text-black px-2 py-1 rounded text-xs font-bold shadow-lg">
                                                                 {testimonial.description}
                                                             </div>
                                                         )}
-                                                    </>
+                                                    </div>
                                                 )}
                                             </div>
 
