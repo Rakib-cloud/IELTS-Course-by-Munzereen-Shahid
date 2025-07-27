@@ -5,7 +5,7 @@ import { FiMenu, FiX, FiChevronDown, FiSearch, FiPhoneCall } from 'react-icons/f
 
 const Header = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [currentLang, setCurrentLang] = useState('bn');
+    const [currentLang, setCurrentLang] = useState('en');
     
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -17,7 +17,7 @@ const Header = () => {
         if (langParam && (langParam === 'en' || langParam === 'bn')) {
             setCurrentLang(langParam);
         } else {
-            setCurrentLang('bn'); // default to Bengali
+            setCurrentLang('en'); // default to English
         }
     }, [searchParams]);
 
