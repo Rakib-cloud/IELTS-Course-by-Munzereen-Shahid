@@ -1,13 +1,20 @@
-import ProductPage from "@/src/components/product/product-page";
+import {ProductData} from "@/src/types/product";
+import {fetchProductData} from "@/src/lib/api";
+import ProductDetails from "@/src/components/product/product-details";
 
 interface HomeProps {
-    searchParams: { [key: string]: string | string[] | undefined };
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default function Home({searchParams}: HomeProps) {
+export default async function HomePage({searchParams}: HomeProps) {
+    const searchParamsValue = await searchParams;
+    const lang = (searchParamsValue.lang as string) || "en";
+    const validLang = lang === 'bn' ? 'bn' : 'en';
+    const data: ProductData = await fetchProductData("ielts-course", validLang);
+
     return (
         <div>
-            <ProductPage searchParams={searchParams}/>
+            {data && <ProductDetails data={data} />}
         </div>
     );
 }

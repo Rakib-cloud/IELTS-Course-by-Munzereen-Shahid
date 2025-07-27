@@ -1,3 +1,4 @@
+'use client'
 import {ProductData} from "@/src/types/product";
 import InstructorSection from "@/src/components/product/product-details/instructor-section";
 import CourseFeaturesSection from "@/src/components/product/product-details/course-features";
