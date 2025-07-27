@@ -50,14 +50,22 @@ export default function TestimonialsSection({ section }: { section: Section }) {
         setCurrentSlide((prev) => (prev <= 0 ? maxSlide : prev - 1));
     };
 
-    const goToSlide = (index: number) => {
-        setCurrentSlide(Math.max(0, Math.min(index, maxSlide)));
-    };
-
     const handleVideoPlay = (videoUrl: string) => {
         if (videoUrl) {
             window.open(`https://www.youtube.com/watch?v=${videoUrl}`, '_blank');
         }
+    };
+
+    // Extract YouTube video ID from URL for thumbnail
+    const getYouTubeVideoId = (url: string) => {
+        const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+        const match = url.match(regex);
+        return match ? match[1] : null;
+    };
+
+    const getYouTubeThumbnail = (videoUrl: string) => {
+        const videoId = getYouTubeVideoId(videoUrl);
+        return videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : null;
     };
 
     if (!section.values || section.values.length === 0) {
@@ -72,87 +80,97 @@ export default function TestimonialsSection({ section }: { section: Section }) {
                         <>
                             <button
                                 onClick={prevSlide}
-                                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-3 hover:bg-gray-50 transition-colors duration-200"
+                                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2 hover:bg-gray-50 transition-colors duration-200"
                                 aria-label="Previous testimonials"
                             >
-                                <FaChevronLeft className="w-5 h-5 text-gray-600" />
+                                <FaChevronLeft className="w-4 h-4 text-gray-600" />
                             </button>
 
                             <button
                                 onClick={nextSlide}
-                                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-3 hover:bg-gray-50 transition-colors duration-200"
+                                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2 hover:bg-gray-50 transition-colors duration-200"
                                 aria-label="Next testimonials"
                             >
-                                <FaChevronRight className="w-5 h-5 text-gray-600" />
+                                <FaChevronRight className="w-4 h-4 text-gray-600" />
                             </button>
                         </>
                     )}
 
-                    <div className={`overflow-hidden ${totalSlides > slidesPerView ? 'mx-12' : ''}`}>
+                    <div className={`overflow-hidden ${totalSlides > slidesPerView ? 'mx-10' : ''}`}>
                         <div
-                            className="flex transition-transform duration-300 ease-in-out"
+                            className="flex transition-transform duration-300 ease-in-out gap-4"
                             style={{ transform: `translateX(-${currentSlide * (100 / slidesPerView)}%)` }}
                         >
                             {section.values.map((testimonial: Testimonial) => (
                                 <div
                                     key={testimonial.id}
-                                    className="px-3 flex-shrink-0"
-                                    style={{ width: `${100 / slidesPerView}%` }}
+                                    className="flex-shrink-0"
+                                    style={{ width: `calc(${100 / slidesPerView}% - 1rem)` }}
                                 >
-                                    <div className="bg-white rounded-xl shadow-lg overflow-hidden h-full flex flex-col">
-                                        <div className="relative h-48">
-                                            {testimonial.thumb && testimonial.video_url ? (
-                                                <div className="relative h-full">
-                                                    <img
-                                                        src={testimonial.thumb}
-                                                        onError={(e) => { e.currentTarget.src = '/default-thumbnail.jpg'; }}
-                                                        alt={testimonial.name}
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                    <button
-                                                        onClick={() => handleVideoPlay(testimonial.video_url)}
-                                                        className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 hover:bg-opacity-50 transition-all duration-200"
-                                                    >
-                                                        <div className="bg-red-600 rounded-full p-4 hover:bg-red-700 transition-colors">
-                                                            <FaPlay className="w-6 h-6 text-white ml-1" />
-                                                        </div>
-                                                    </button>
-                                                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-                                                        <span className="text-white font-bold text-lg">
-                                                            {testimonial.description}
-                                                        </span>
+                                    {testimonial.video_url ? (
+                                        // Video Card Design
+                                        <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+                                            <div className="relative h-40">
+                                                <img
+                                                    src={testimonial.thumb || getYouTubeThumbnail(testimonial.video_url) || '/default-thumbnail.jpg'}
+                                                    onError={(e) => { 
+                                                        const fallback = getYouTubeThumbnail(testimonial.video_url);
+                                                        if (fallback && e.currentTarget.src !== fallback) {
+                                                            e.currentTarget.src = fallback;
+                                                        } else {
+                                                            e.currentTarget.src = '/default-thumbnail.jpg';
+                                                        }
+                                                    }}
+                                                    alt={testimonial.name}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                                <button
+                                                    onClick={() => handleVideoPlay(testimonial.video_url)}
+                                                    className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 hover:bg-opacity-40 transition-all duration-200"
+                                                >
+                                                    <div className="bg-red-600 rounded-full p-3 hover:bg-red-700 transition-colors">
+                                                        <FaPlay className="w-4 h-4 text-white ml-0.5" />
                                                     </div>
+                                                </button>
+                                                {/* Score Badge */}
+                                                <div className="absolute top-2 right-2 bg-yellow-500 text-black px-2 py-1 rounded text-sm font-bold">
+                                                    {testimonial.description}
                                                 </div>
-                                            ) : (
-                                                <div className="h-full flex flex-col items-center justify-center p-6 bg-gradient-to-br from-blue-500 to-purple-600">
+                                            </div>
+                                            
+                                            <div className="p-4">
+                                                <div className="flex items-center">
                                                     <img
                                                         src={testimonial.profile_image}
                                                         onError={(e) => { e.currentTarget.src = '/default-avatar.jpg'; }}
                                                         alt={testimonial.name}
-                                                        className="w-20 h-20 rounded-full border-4 border-white object-cover mb-4"
+                                                        className="w-12 h-12 rounded-full object-cover mr-3"
                                                     />
-                                                    <span className="text-white font-bold text-lg">
-                                                        {testimonial.description}
-                                                    </span>
+                                                    <div>
+                                                        <h3 className="font-semibold text-gray-900 text-sm">
+                                                            {testimonial.name}
+                                                        </h3>
+                                                        <p className="text-gray-600 text-xs">
+                                                            IELTS Score: {testimonial.description}
+                                                        </p>
+                                                    </div>
                                                 </div>
-                                            )}
-                                        </div>
-
-                                        <div className="p-6 flex flex-col flex-1">
-                                            <h3 className="font-bold text-lg text-gray-900 mb-3">
-                                                {testimonial.name}
-                                            </h3>
-
-                                            <div className="text-gray-700 text-sm leading-relaxed flex-1">
-                                                <p className="whitespace-pre-line">
-                                                    {testimonial.testimonial.length > 200
-                                                        ? `${testimonial.testimonial.slice(0, 200)}...`
-                                                        : testimonial.testimonial}
-                                                </p>
                                             </div>
-
-                                            {!testimonial.thumb && (
-                                                <div className="flex items-center mt-4 pt-4 border-t border-gray-100">
+                                        </div>
+                                    ) : (
+                                        // Text Card Design
+                                        <div className="bg-pink-50 rounded-lg shadow-md overflow-hidden border border-pink-200">
+                                            <div className="p-4">
+                                                <div className="flex items-start mb-3">
+                                                    <div className="text-pink-400 text-4xl mr-2 leading-none">"</div>
+                                                    <div className="text-gray-700 text-sm leading-relaxed">
+                                                        {testimonial.testimonial.length > 150
+                                                            ? `${testimonial.testimonial.slice(0, 150)}...`
+                                                            : testimonial.testimonial}
+                                                    </div>
+                                                </div>
+                                                
+                                                <div className="flex items-center mt-4 pt-3 border-t border-pink-200">
                                                     <img
                                                         src={testimonial.profile_image}
                                                         onError={(e) => { e.currentTarget.src = '/default-avatar.jpg'; }}
@@ -160,42 +178,23 @@ export default function TestimonialsSection({ section }: { section: Section }) {
                                                         className="w-10 h-10 rounded-full object-cover mr-3"
                                                     />
                                                     <div>
-                                                        <p className="font-medium text-gray-900 text-sm">{testimonial.name}</p>
-                                                        <p className="text-gray-500 text-xs">Student</p>
+                                                        <h3 className="font-semibold text-gray-900 text-sm">
+                                                            {testimonial.name}
+                                                        </h3>
+                                                        <p className="text-gray-600 text-xs">
+                                                            IELTS Score: {testimonial.description}
+                                                        </p>
                                                     </div>
                                                 </div>
-                                            )}
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
                             ))}
                         </div>
                     </div>
-
-                    {totalSlides > slidesPerView && (
-                        <div className="flex justify-center space-x-2 mt-8">
-                            {Array.from({ length: maxSlide + 1 }, (_, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => goToSlide(index)}
-                                    className={`w-3 h-3 rounded-full transition-colors duration-200 ${
-                                        currentSlide === index
-                                            ? 'bg-blue-600'
-                                            : 'bg-gray-300 hover:bg-gray-400'
-                                    }`}
-                                    aria-label={`Go to slide ${index + 1}`}
-                                />
-                            ))}
-                        </div>
-                    )}
-                </div>
-
-                <div className="mt-4 text-center text-sm text-gray-500">
-                    Showing {Math.min(currentSlide + slidesPerView, totalSlides)} of {totalSlides} testimonials
-                    (Slide {currentSlide + 1} of {maxSlide + 1})
                 </div>
             </div>
         </ProductSectionWrapper>
-
     );
 }
