@@ -1,9 +1,13 @@
 import type {Metadata} from "next";
 import {Geist, Geist_Mono} from "next/font/google";
 import "./globals.css";
-import Header from "@/src/components/common/header";
+import dynamic from 'next/dynamic';
 import Footer from "@/src/components/common/footer";
 
+// Dynamic import with no SSR to avoid useSearchParams issue
+const Header = dynamic(() => import("@/src/components/common/header"), {
+    ssr: false
+});
 
 const geistSans = Geist({
     variable: "--font-geist-sans",

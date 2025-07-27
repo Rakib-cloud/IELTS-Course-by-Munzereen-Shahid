@@ -1,10 +1,9 @@
 'use client';
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { FiMenu, FiX, FiChevronDown, FiSearch, FiPhoneCall } from 'react-icons/fi';
 
-// Component that uses useSearchParams - needs to be in Suspense
-const HeaderWithSearchParams = () => {
+const Header = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [currentLang, setCurrentLang] = useState('en');
 
@@ -138,85 +137,6 @@ const HeaderWithSearchParams = () => {
                 </div>
             )}
         </header>
-    );
-};
-
-// Fallback component for loading state
-const HeaderFallback = () => {
-    const navItems = [
-        { label: 'Class 6–12', hasDropdown: true },
-        { label: 'Skills', hasDropdown: true },
-        { label: 'Admission' },
-        { label: 'Online Batch', hasDropdown: true },
-        { label: 'English Centre', hasDropdown: true },
-        { label: 'More', hasDropdown: true },
-    ];
-
-    return (
-        <header className="w-full border-b border-b-gray-200 bg-white shadow">
-            <div className="container mx-auto px-4 py-2 flex items-center justify-between gap-4">
-                {/* Logo */}
-                <div className="flex items-center space-x-2">
-                    <img
-                        src="/logo.svg"
-                        alt="Logo"
-                        className="h-8 w-auto"
-                    />
-                </div>
-
-                {/* Search bar - hidden on mobile */}
-                <div className="hidden lg:flex flex-1 mx-4 max-w-md">
-                    <div className="flex items-center w-full border rounded-full px-4 py-2 bg-gray-50 shadow-sm">
-                        <FiSearch className="text-gray-500 w-5 h-5" />
-                        <input
-                            type="text"
-                            placeholder="Search for skills courses or school programs..."
-                            className="ml-2 bg-transparent w-full outline-none text-sm text-gray-700"
-                        />
-                    </div>
-                </div>
-
-                {/* Navigation links - hidden on mobile */}
-                <nav className="hidden lg:flex items-center space-x-4 text-sm text-gray-700">
-                    {navItems.map((item, i) => (
-                        <div key={i} className="flex items-center cursor-pointer hover:text-green-600">
-                            {item.label}
-                            {item.hasDropdown && <FiChevronDown className="ml-1 w-4 h-4" />}
-                        </div>
-                    ))}
-                </nav>
-
-                {/* Right section */}
-                <div className="flex items-center gap-2 text-sm">
-                    <button className="border px-2 py-1 cursor-pointer rounded text-gray-700 hover:bg-gray-50 transition-colors">
-                        বাং
-                    </button>
-                    <div className="hidden lg:flex items-center gap-1 text-green-600 font-medium">
-                        <FiPhoneCall className="w-5 h-5" />
-                        16910
-                    </div>
-                    <button className="bg-green-600 cursor-pointer text-white px-4 py-1 rounded text-sm hover:bg-green-700 transition-colors">
-                        Login
-                    </button>
-                </div>
-
-                {/* Mobile Menu Button */}
-                <div className="lg:hidden">
-                    <button>
-                        <FiMenu className="w-6 h-6 text-gray-800" />
-                    </button>
-                </div>
-            </div>
-        </header>
-    );
-};
-
-// Main Header component with Suspense boundary
-const Header = () => {
-    return (
-        <Suspense fallback={<HeaderFallback />}>
-            <HeaderWithSearchParams />
-        </Suspense>
     );
 };
 
