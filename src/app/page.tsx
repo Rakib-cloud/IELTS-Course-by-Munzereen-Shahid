@@ -1,9 +1,13 @@
 import ProductPage from "@/src/components/product/product-page";
 
-export default function Home() {
+interface HomeProps {
+    searchParams: { [key: string]: string | string[] | undefined };
+}
+
+export default function Home({ searchParams }: HomeProps) {
     return (
         <div>
-            <ProductPage/>
+            <ProductPage searchParams={searchParams} />
         </div>
     );
 }
