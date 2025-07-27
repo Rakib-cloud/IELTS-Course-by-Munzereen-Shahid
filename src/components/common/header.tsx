@@ -181,7 +181,7 @@ const Header = () => {
                 <div className="flex items-center gap-2 text-sm">
                     <button
                         onClick={toggleLanguage}
-                        className="border px-2 py-1 rounded text-gray-700 hover:bg-gray-50 transition-colors"
+                        className="border px-2 py-1 cursor-pointer rounded text-gray-700 hover:bg-gray-50 transition-colors"
                         title={`Switch to ${currentLang === 'bn' ? 'English' : 'বাংলা'}`}
                     >
                         {currentLang === 'bn' ? 'EN' : 'বাং'}
@@ -190,7 +190,7 @@ const Header = () => {
                         <FiPhoneCall className="w-5 h-5" />
                         16910
                     </div>
-                    <button className="bg-green-600 text-white px-4 py-1 rounded text-sm hover:bg-green-700 transition-colors">
+                    <button className="bg-green-600 cursor-pointer text-white px-4 py-1 rounded text-sm hover:bg-green-700 transition-colors">
                         {currentLang === 'bn' ? 'লগ-ইন' : 'Login'}
                     </button>
                 </div>
@@ -220,7 +220,7 @@ const Header = () => {
                         <div className="flex items-center gap-2 mt-2">
                             <button
                                 onClick={toggleLanguage}
-                                className="border px-2 py-1 rounded text-gray-700 hover:bg-gray-50 transition-colors"
+                                className="border px-2 py-1 cursor-pointer rounded text-gray-700 hover:bg-gray-50 transition-colors"
                                 title={`Switch to ${currentLang === 'bn' ? 'English' : 'বাংলা'}`}
                             >
                                 {currentLang === 'bn' ? 'EN' : 'বাং'}
@@ -229,7 +229,7 @@ const Header = () => {
                                 <FiPhoneCall className="w-5 h-5" />
                                 16910
                             </div>
-                            <button className="bg-green-600 text-white px-4 py-1 rounded text-sm ml-auto hover:bg-green-700 transition-colors">
+                            <button className="bg-green-600 cursor-pointer text-white px-4 py-1 rounded text-sm ml-auto hover:bg-green-700 transition-colors">
                                 {currentLang === 'bn' ? 'লগ-ইন' : 'Login'}
                             </button>
                         </div>

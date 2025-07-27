@@ -29,7 +29,7 @@ export default function FAQSection({section}: { section: Section }) {
                                 onClick={() => toggleItem(index)}
                                 className="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200"
                             >
-                <span className="text-sm md:text-base font-semibold text-gray-900 pr-4">
+                <span className="text-sm md:text-base  font-semibold text-gray-900 pr-4">
                   {faq.question}
                 </span>
                                 {openItems.has(index) ? (

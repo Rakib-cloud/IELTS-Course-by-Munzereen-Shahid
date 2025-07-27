@@ -5,10 +5,7 @@ import { CtaText } from "@/src/types/product";
 import CtaButton from "@/src/components/product/product-details/cta-button";
 import {FiPhone} from "react-icons/fi";
 
-interface ChecklistItem {
-    icon: string;
-    text: string;
-}
+
 
 interface PricingSectionProps {
     currentPrice: number;
@@ -30,7 +27,7 @@ export default function PricingSection({ currentPrice, cta, checklist }: Pricing
             <div className="p-4 md:p-6">
                 <div className="flex items-center gap-2 mb-4">
                     <div className="flex items-center justify-center space-x-2 mb-2">
-                        <span className="text-2xl md:text-3xl font-bold text-gray-900">৳{currentPrice}</span>
+                        <span className="text-xl md:text-2xl font-bold text-gray-900">৳{currentPrice}</span>
                         <span className="text-lg text-gray-500 line-through">৳{defaultPrice}</span>
                     </div>
                     {discount > 0 && (

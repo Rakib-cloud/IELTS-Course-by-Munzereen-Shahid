@@ -12,9 +12,9 @@ export default async function ProductPage({searchParams}: ProductPageProps) {
     const data: ProductData = await fetchProductData("ielts-course", validLang);
 
     return (
-        <section className="">
-            <ProductDetails data={data}/>
-        </section>
+        <>
+            {data && <ProductDetails data={data}/>}
+        </>
     );
 }
 

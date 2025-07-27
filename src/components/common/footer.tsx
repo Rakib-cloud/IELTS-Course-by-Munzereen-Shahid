@@ -47,7 +47,7 @@ const Footer = () => {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="bg-white text-black   container mx-auto px-4 py-10">
+        <footer className="bg-white text-black   container mx-auto ">
             <div className="px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {/* Logo & App Promo */}
                 <div>

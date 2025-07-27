@@ -6,7 +6,6 @@ A fully dynamic and SEO-friendly product detail page for the [10 Minute School I
 - 💨 **TailwindCSS**
 - ⚙️ **TypeScript**
 - 🌐 **Multi-language support (`en` / `bn`)**
-- 🎬 YouTube Trailer Integration
 - ✨ Optimized SEO with metadata from API
 
 ---

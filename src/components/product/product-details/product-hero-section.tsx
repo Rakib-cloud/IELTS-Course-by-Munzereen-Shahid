@@ -29,8 +29,6 @@ export default function ProductHeroSection({
 
             if (rightSideElement) {
                 const rightSideRect = rightSideElement.getBoundingClientRect();
-
-                // Make sticky only when the entire right sidebar has scrolled out of view
                 const shouldBeSticky = rightSideRect.bottom < 0;
 
                 setIsSticky(shouldBeSticky);
@@ -90,7 +88,7 @@ export default function ProductHeroSection({
                         id="right-sidebar"
                         className="w-full md:max-w-[400px] md:absolute md:right-4 lg:right-8 md:top-8"
                     >
-                        <div className="bg-white rounded shadow md:sticky md:top-8">
+                        <div className="bg-white  shadow md:sticky md:top-8">
                             {/* Desktop Gallery */}
                             <div className="hidden md:block p-1">
                                 <div className="rounded-lg overflow-hidden">
@@ -105,7 +103,7 @@ export default function ProductHeroSection({
 
             {isSticky && (
                 <div className="fixed top-0 right-4 lg:right-8 w-full max-w-[400px] z-50 hidden md:block">
-                    <div className="bg-white rounded shadow">
+                    <div className="bg-white  shadow">
                         <PricingSection currentPrice={500} cta={ctaText} checklist={checklist}/>
                     </div>
                 </div>

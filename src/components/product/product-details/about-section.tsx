@@ -8,7 +8,7 @@ import {AboutItem} from "@/src/types/product-details";
 
 
 export default function AboutSection({section}: { section: Section }) {
-    const [openIndex, setOpenIndex] = useState<number>(0); // First one open
+    const [openIndex, setOpenIndex] = useState<number>(0);
 
     const toggleItem = (index: number) => {
         setOpenIndex((prev) => (prev === index ? -1 : index));
@@ -27,7 +27,7 @@ export default function AboutSection({section}: { section: Section }) {
                             className="w-full px-6 py-5 cursor-pointer text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200"
                         >
               <span
-                  className="text-base font-semibold text-gray-900 pr-4"
+                  className="text-base font-medium text-gray-900 pr-4"
                   dangerouslySetInnerHTML={{__html: about.title}}
               />
                             {openIndex === index ? (
