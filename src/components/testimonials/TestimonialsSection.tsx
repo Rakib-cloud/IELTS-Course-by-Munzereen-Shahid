@@ -19,7 +19,8 @@ export default function TestimonialsSection({ section }: { section: Section }) {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [slidesPerView, setSlidesPerView] = useState(2);
     const [showVideoModal, setShowVideoModal] = useState(false);
-    const [currentVideoUrl, setCurrentVideoUrl] = useState('');
+    const [currentVideoId, setCurrentVideoId] = useState('');
+    const [isVideoLoading, setIsVideoLoading] = useState(false);
 
     const totalSlides = section.values.length;
     const maxSlide = Math.max(0, totalSlides - slidesPerView);
@@ -52,69 +53,97 @@ export default function TestimonialsSection({ section }: { section: Section }) {
         setCurrentSlide((prev) => (prev <= 0 ? maxSlide : prev - 1));
     };
 
-    // Extract YouTube video ID from URL
-    const getYouTubeVideoId = (url: string) => {
+    // Extract YouTube video ID from various URL formats
+    const extractYouTubeVideoId = (url: string): string | null => {
         if (!url) return null;
         
+        // Remove any whitespace
+        url = url.trim();
+        
+        // Handle different YouTube URL formats
         const patterns = [
-            /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
-            /youtube\.com\/watch\?.*v=([^&\n?#]+)/,
+            // Standard watch URL
+            /(?:youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/,
+            // Short URL
+            /(?:youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+            // Embed URL
+            /(?:youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
+            // YouTube URL with additional parameters
+            /(?:youtube\.com\/watch\?.*v=)([a-zA-Z0-9_-]{11})/,
+            // Mobile URL
+            /(?:m\.youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/,
         ];
         
         for (const pattern of patterns) {
             const match = url.match(pattern);
             if (match && match[1]) {
+                console.log('Extracted video ID:', match[1]);
                 return match[1];
             }
         }
+        
+        // If no pattern matches, try to extract 11-character alphanumeric string
+        const fallbackMatch = url.match(/([a-zA-Z0-9_-]{11})/);
+        if (fallbackMatch) {
+            console.log('Fallback video ID:', fallbackMatch[1]);
+            return fallbackMatch[1];
+        }
+        
+        console.log('No video ID found for URL:', url);
         return null;
     };
 
-    // Get YouTube thumbnail with multiple quality options
-    const getYouTubeThumbnail = (videoUrl: string) => {
-        const videoId = getYouTubeVideoId(videoUrl);
-        if (!videoId) return null;
+    // Get YouTube thumbnail URL
+    const getYouTubeThumbnail = (videoUrl: string): string => {
+        const videoId = extractYouTubeVideoId(videoUrl);
+        if (!videoId) return '/default-thumbnail.jpg';
         
-        // Try high quality first, fallback to medium quality
-        return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+        // Use maxresdefault for better quality, fallback to hqdefault
+        return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
     };
 
-    // Convert YouTube URL to embed URL
-    const getYouTubeEmbedUrl = (videoUrl: string) => {
-        const videoId = getYouTubeVideoId(videoUrl);
-        if (!videoId) return null;
-        
-        return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
-    };
-
+    // Handle video play - show modal with iframe
     const handleVideoPlay = (videoUrl: string) => {
-        const embedUrl = getYouTubeEmbedUrl(videoUrl);
-        if (embedUrl) {
-            setCurrentVideoUrl(embedUrl);
+        console.log('Playing video:', videoUrl);
+        const videoId = extractYouTubeVideoId(videoUrl);
+        if (videoId) {
+            setCurrentVideoId(videoId);
             setShowVideoModal(true);
+            setIsVideoLoading(true);
+        } else {
+            // Fallback: open in new tab if video ID extraction fails
+            window.open(videoUrl.startsWith('http') ? videoUrl : `https://www.youtube.com/watch?v=${videoUrl}`, '_blank');
         }
     };
 
     const closeVideoModal = () => {
         setShowVideoModal(false);
-        setCurrentVideoUrl('');
+        setCurrentVideoId('');
+        setIsVideoLoading(false);
     };
 
-    // Handle escape key to close modal
+    // Handle escape key and outside click
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') {
+            if (e.key === 'Escape') closeVideoModal();
+        };
+
+        const handleClickOutside = (e: MouseEvent) => {
+            const target = e.target as HTMLElement;
+            if (target.classList.contains('video-modal-backdrop')) {
                 closeVideoModal();
             }
         };
 
         if (showVideoModal) {
             document.addEventListener('keydown', handleEscape);
-            document.body.style.overflow = 'hidden'; // Prevent background scroll
+            document.addEventListener('click', handleClickOutside);
+            document.body.style.overflow = 'hidden';
         }
 
         return () => {
             document.removeEventListener('keydown', handleEscape);
+            document.removeEventListener('click', handleClickOutside);
             document.body.style.overflow = 'unset';
         };
     }, [showVideoModal]);
@@ -163,39 +192,39 @@ export default function TestimonialsSection({ section }: { section: Section }) {
                                             <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
                                                 <div className="relative h-40">
                                                     <img
-                                                        src={testimonial.thumb || getYouTubeThumbnail(testimonial.video_url) || '/default-thumbnail.jpg'}
+                                                        src={testimonial.thumb || getYouTubeThumbnail(testimonial.video_url)}
                                                         onError={(e) => {
                                                             const target = e.currentTarget;
-                                                            // Try different thumbnail qualities
-                                                            if (target.src.includes('hqdefault')) {
-                                                                const videoId = getYouTubeVideoId(testimonial.video_url);
-                                                                if (videoId) {
+                                                            const videoId = extractYouTubeVideoId(testimonial.video_url);
+                                                            
+                                                            if (videoId) {
+                                                                // Try different thumbnail qualities
+                                                                if (target.src.includes('maxresdefault')) {
+                                                                    target.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+                                                                } else if (target.src.includes('hqdefault')) {
                                                                     target.src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
-                                                                    return;
-                                                                }
-                                                            }
-                                                            if (target.src.includes('mqdefault')) {
-                                                                const videoId = getYouTubeVideoId(testimonial.video_url);
-                                                                if (videoId) {
+                                                                } else if (target.src.includes('mqdefault')) {
                                                                     target.src = `https://img.youtube.com/vi/${videoId}/default.jpg`;
-                                                                    return;
+                                                                } else {
+                                                                    target.src = '/default-thumbnail.jpg';
                                                                 }
+                                                            } else {
+                                                                target.src = '/default-thumbnail.jpg';
                                                             }
-                                                            target.src = '/default-thumbnail.jpg';
                                                         }}
                                                         alt={testimonial.name}
                                                         className="w-full h-full object-cover"
                                                     />
                                                     <button
                                                         onClick={() => handleVideoPlay(testimonial.video_url)}
-                                                        className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 hover:bg-opacity-40 transition-all duration-200"
+                                                        className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 hover:bg-opacity-50 transition-all duration-200 group"
                                                     >
-                                                        <div className="bg-red-600 rounded-full p-3 hover:bg-red-700 transition-colors">
+                                                        <div className="bg-red-600 rounded-full p-3 hover:bg-red-700 transition-colors group-hover:scale-110 transform">
                                                             <FaPlay className="w-4 h-4 text-white ml-0.5" />
                                                         </div>
                                                     </button>
                                                     {testimonial.description && (
-                                                        <div className="absolute top-2 right-2 bg-yellow-500 text-black px-2 py-1 rounded text-xs font-bold">
+                                                        <div className="absolute top-2 right-2 bg-yellow-400 text-black px-2 py-1 rounded text-xs font-bold shadow-lg">
                                                             {testimonial.description}
                                                         </div>
                                                     )}
@@ -207,7 +236,7 @@ export default function TestimonialsSection({ section }: { section: Section }) {
                                                             src={testimonial.profile_image}
                                                             onError={(e) => { e.currentTarget.src = '/default-avatar.jpg'; }}
                                                             alt={testimonial.name}
-                                                            className="w-12 h-12 rounded-full object-cover mr-3"
+                                                            className="w-12 h-12 rounded-full object-cover mr-3 border-2 border-gray-200"
                                                         />
                                                         <div>
                                                             <h3 className="font-semibold text-gray-900 text-sm">
@@ -222,22 +251,22 @@ export default function TestimonialsSection({ section }: { section: Section }) {
                                             </div>
                                         ) : (
                                             <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 h-full">
-                                                <div className="p-4">
-                                                    <div className="flex items-start mb-3">
-                                                        <div className="text-pink-400 text-4xl mr-2 leading-none">"</div>
+                                                <div className="p-4 h-full flex flex-col">
+                                                    <div className="flex items-start mb-3 flex-1">
+                                                        <div className="text-pink-400 text-2xl mr-2 leading-none flex-shrink-0">"</div>
                                                         <div className="text-gray-700 text-sm leading-relaxed">
-                                                            {testimonial.testimonial.length > 150
-                                                                ? `${testimonial.testimonial.slice(0, 150)}...`
+                                                            {testimonial.testimonial.length > 120
+                                                                ? `${testimonial.testimonial.slice(0, 120)}...`
                                                                 : testimonial.testimonial}
                                                         </div>
                                                     </div>
 
-                                                    <div className="flex items-center mt-4 pt-3 border-t border-gray-200">
+                                                    <div className="flex items-center pt-3 border-t border-gray-200 mt-auto">
                                                         <img
                                                             src={testimonial.profile_image}
                                                             onError={(e) => { e.currentTarget.src = '/default-avatar.jpg'; }}
                                                             alt={testimonial.name}
-                                                            className="w-10 h-10 rounded-full object-cover mr-3"
+                                                            className="w-10 h-10 rounded-full object-cover mr-3 border-2 border-gray-200"
                                                         />
                                                         <div>
                                                             <h3 className="font-semibold text-gray-900 text-sm">
@@ -260,25 +289,51 @@ export default function TestimonialsSection({ section }: { section: Section }) {
             </ProductSectionWrapper>
 
             {/* Video Modal */}
-            {showVideoModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-                    <div className="relative w-full max-w-4xl mx-4">
+            {showVideoModal && currentVideoId && (
+                <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 video-modal-backdrop">
+                    <div className="relative w-full max-w-4xl mx-4 lg:mx-8">
+                        {/* Close Button */}
                         <button
                             onClick={closeVideoModal}
-                            className="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors"
+                            className="absolute -top-12 right-0 text-white hover:text-red-400 transition-colors duration-200 z-10"
                             aria-label="Close video"
                         >
                             <FaTimes className="w-8 h-8" />
                         </button>
-                        <div className="relative pb-[56.25%] h-0 bg-black rounded-lg overflow-hidden">
+                        
+                        {/* Video Container */}
+                        <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                            {isVideoLoading && (
+                                <div className="absolute inset-0 bg-gray-900 flex items-center justify-center rounded-lg">
+                                    <div className="text-white text-lg">Loading video...</div>
+                                </div>
+                            )}
+                            
                             <iframe
-                                src={currentVideoUrl}
-                                className="absolute top-0 left-0 w-full h-full"
+                                src={`https://www.youtube.com/embed/${currentVideoId}?autoplay=1&rel=0&modestbranding=1&showinfo=0`}
+                                className="absolute top-0 left-0 w-full h-full rounded-lg"
                                 frameBorder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                 allowFullScreen
-                                title="Video testimonial"
+                                title="YouTube video player"
+                                onLoad={() => setIsVideoLoading(false)}
+                                onError={() => {
+                                    setIsVideoLoading(false);
+                                    console.error('Error loading video iframe');
+                                }}
                             />
+                        </div>
+                        
+                        {/* Alternative: Open in YouTube link */}
+                        <div className="mt-4 text-center">
+                            <a
+                                href={`https://www.youtube.com/watch?v=${currentVideoId}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-white text-sm hover:text-red-400 transition-colors underline"
+                            >
+                                Open in YouTube
+                            </a>
                         </div>
                     </div>
                 </div>
