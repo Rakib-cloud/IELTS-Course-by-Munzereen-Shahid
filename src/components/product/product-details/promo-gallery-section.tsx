@@ -2,9 +2,10 @@
 
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
+import {Media} from "@/src/types/product";
 
-export function PromoGallerySection({ media }: any) {
-    const galleryItems = media
+export function PromoGallerySection({ media }: { media: Media[] }) {
+    const galleryItems:any = media
         .filter((item: any) => item.name === "preview_gallery")
         .map((item: any) => {
             if (item.resource_type === "image") {

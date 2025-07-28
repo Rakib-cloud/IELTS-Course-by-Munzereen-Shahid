@@ -129,9 +129,9 @@ export default function TestimonialsSection({section}: { section: Section }) {
                             className="flex transition-transform duration-300 ease-in-out gap-4"
                             style={{transform: `translateX(-${currentSlide * (100 / slidesPerView)}%)`}}
                         >
-                            {section.values.map((testimonial: Testimonial) => (
+                            {section.values.map((testimonial: Testimonial, index: number) => (
                                 <div
-                                    key={testimonial.id}
+                                    key={index}
                                     className="flex-shrink-0"
                                     style={{width: `calc(${100 / slidesPerView}% - 1rem)`}}
                                 >

@@ -10,7 +10,7 @@ export default function LearningOutcomesSection({section}: { section: Section })
             <div className="rounded-lg md:border md:border-gray-200 md:bg-white">
                 <div className="md:p-4">
                     <ul className="grid grid-cols-1 gap-2 md:grid-cols-[1fr_1fr] md:gap-4">
-                        {section.values.map((point: LearningPoint, i) => (
+                        {section.values.map((point: LearningPoint, i:number) => (
                             <li key={point.id || i} className="flex items-start gap-2 mb-2">
                                 <FiCheck
                                     className="mt-[2px] flex-shrink-0 text-blue-500"

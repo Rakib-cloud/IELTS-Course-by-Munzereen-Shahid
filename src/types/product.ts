@@ -1,11 +1,15 @@
-export interface Medium {
-    type: string;
-    url: string;
-}
+
 
 export interface Checklist {
-    title: string;
-    items: string[];
+    icon: string;
+    text: string;
+}
+export interface Media{
+    name: string;
+    resource_type: string;
+    type: string;
+    embedUrl: string;
+    original: string;
 }
 
 export interface Section {
@@ -35,7 +39,7 @@ export interface ProductData {
     id: number;
     title: string;
     description: string;
-    media: Medium[];
+    media: Media[];
     checklist: Checklist[];
     seo: Seo;
     cta_text: CtaText;

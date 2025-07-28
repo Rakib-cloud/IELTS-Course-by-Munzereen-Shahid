@@ -10,10 +10,10 @@ A fully dynamic and SEO-friendly product detail page for the [10 Minute School I
 
 ---
 
-[//]: # (## 🚀 Live Preview)
+## 🚀 Live Preview
 
-[//]: # ()
-[//]: # (Coming soon on [Vercel]&#40;https://vercel.com/&#41; &#40;after deployment&#41;)
+
+ [Ielts course by Munzereen Shahid](https://ielts-course-by-munzereen-shahid-nu.vercel.app/)
 
 ---
 

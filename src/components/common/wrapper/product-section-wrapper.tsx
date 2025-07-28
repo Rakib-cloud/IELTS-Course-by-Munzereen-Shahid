@@ -8,7 +8,7 @@ interface SectionWrapperProps {
 
 function ProductSectionWrapper({title, children, className = ""}: SectionWrapperProps) {
     return (
-        <div className={` px-4 py-4 md:max-w-[calc(100%_-_400px)] ${className}`}>
+        <div className={` px-4 py-4 w-full lg:max-w-[calc(100%_-_400px)] ${className}`}>
             {title && <h2 className="mb-4 text-xl font-semibold md:text-2xl">{title}</h2>}
             {children}
         </div>

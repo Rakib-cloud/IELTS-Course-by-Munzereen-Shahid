@@ -24,7 +24,7 @@ export default function ProductDetails({data}: { data: ProductData }) {
 
             />
 
-            <div className="container mx-auto px-4 lg:px-32 py-6">
+            <div className="container mx-auto px-4 lg:px-28 py-6">
                 {getSection("instructors") && <InstructorSection section={getSection("instructors")}/>}
                 {getSection("features") && <CourseFeaturesSection section={getSection("features")}/>}
                 {getSection("group_join_engagement") &&
